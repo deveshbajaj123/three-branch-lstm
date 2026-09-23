@@ -1,0 +1,6 @@
+# This shareable folder contains source and documentation only.
+*
+!*.py
+!README.md
+!requirements.txt
+!.gitignore

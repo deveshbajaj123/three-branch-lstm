@@ -1,0 +1,65 @@
+"""One place for every setting used by the readable pipeline."""
+
+from pathlib import Path
+
+
+PACKAGE_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = PACKAGE_DIR.parent
+
+CLEANED_CLIP_DIR = PROJECT_DIR / "data_multi_class_background_cleaned"
+NOISE_PROFILE_DIR = PROJECT_DIR / "noise profile audio"
+PINNED_YAMNET_DIR = PROJECT_DIR / "yamnet_pinned"
+FEATURE_CACHE = PACKAGE_DIR / "cache" / "model_features_459.joblib"
+RESULTS_DIR = PACKAGE_DIR / "results"
+RAW_CLIP_DIR = PACKAGE_DIR / "raw_clips_459"
+RAW_CLIP_MANIFEST = RAW_CLIP_DIR / "manifest.csv"
+FIELD_DENOISED_DIR = (
+    PROJECT_DIR
+    / "cascaded_pipeline"
+    / "inference_augmented_capR165_20240116_152339"
+    / "clips_denoised"
+)
+
+# Thirty-four manually selected windows from the 16 January passive recording.
+FIELD_RECORDING_NAME = "capR165_20240116_152339"
+FIELD_CLIP_IDS = (
+    102, 156, 172, 1, 9, 20, 26, 29, 31, 33, 41, 48, 54, 62, 70, 79, 88,
+    89, 97, 99, 100, 112, 114, 117, 118, 157, 185, 207, 225, 230, 231, 233,
+    234, 235,
+)
+FIELD_ELEPHANT_IDS = frozenset({102, 156, 172})
+
+RAW_SAMPLE_RATE = 24_000
+YAMNET_SAMPLE_RATE = 16_000
+CLIP_SECONDS = 10
+YAMNET_MAX_FRAMES = 20
+BIRDNET_SAMPLE_RATE = 48_000
+BIRDNET_WINDOW_SECONDS = 3
+BIRDNET_HOP_SECONDS = 1
+BIRDNET_SEQUENCE_STEPS = 8
+BIRDNET_SPEED_FACTOR = 16
+EMBEDDING_DIMENSION = 1024
+ACOUSTIC_FEATURE_COUNT = 5
+PCA_COMPONENTS = 64
+
+# There is deliberately one split seed and one neural-network seed.
+EXPECTED_CLIP_COUNT = 459
+EXPECTED_ELEPHANT_COUNT = 191
+EXPECTED_CONTROL_COUNT = 268
+SPLIT_SEED = 0
+TRAINING_SEED = 1234
+N_FOLDS = 5
+N_EPOCHS = 60
+BATCH_SIZE = 16
+LEARNING_RATE = 1e-3
+DECISION_THRESHOLD = 0.5
+
+LSTM_UNITS = 32
+DROPOUT = 0.5
+RECURRENT_DROPOUT = 0.2
+L2_STRENGTH = 1e-4
+FRAME_MASK_FRACTION = 0.2
+EXPECTED_MODEL_PARAMETERS = 27_433
+
+CACHE_FORMAT_VERSION = 2
+PIPELINE_VERSION = 2
