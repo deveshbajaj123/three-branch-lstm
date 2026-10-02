@@ -3,7 +3,7 @@
 
 
 1. denoised audio → YAMNet frame embeddings → 64-component PCA → 32-unit LSTM;
-2. raw audio → BirdNET embeddings at 16× speed → 64-component PCA → 32-unit LSTM;
+2. raw audio → BirdNET embeddings at 16× speed → 2 dense layers
 3. five denoised low-frequency acoustic features → two small dense layers.
 
 The three summaries are concatenated and passed through dropout, one 32-unit
@@ -30,19 +30,17 @@ Run `python -m readable_three_branch_stratified` to test it out.
 
 The 459 examples have two physically separate sources. YAMNet and the acoustic
 features read the existing denoised files. BirdNET reads only files under
-`raw_clips_459`. Three curated examples without a recoverable raw source are not
+the raw clips. Three curated examples without a recoverable raw source are not
 included; the remaining 425 curated and 34 manually reviewed passive clips form
 the 459-clip dataset.
 
 ### YAMNet and augmented features
 
-The default feature-cache build directly reads the existing files in
-`data_multi_class_background_cleaned` and the existing 16 January
-`clips_denoised` directory. It does not apply denoising again. Those files were
+The default feature-cache build directly reads denoised files. It does not apply denoising again. Those files were
 originally produced by splitting at 300 Hz and applying gentler stationary noise
 reduction below 300 Hz (`prop_decrease=0.40`) and stronger reduction above it
 (`0.85`). Local YAMNet produces a sequence of 1024-value frame embeddings from
-this existing denoised ten-second waveform.
+this existing denoised ten-second waveform. Each 1024 value represents 0.96 seconds of sound.
 
 The same denoised waveform supplies five clip-level values:
 
@@ -61,11 +59,7 @@ dimensions. A second scaler standardises the PCA output to ensure all values are
 ### BirdNET
 
 BirdNET receives the raw, pre-denoising ten-second waveform only from
-`raw_clips_459`. It is divided into
-eight overlapping three-second windows with a one-second jump. Each window is
-resampled so that feeding it to BirdNET at 48 kHz represents 16× 
-frequency increase. The accelerated sound is tiled to fill BirdNET's
-three-second input. Fold-local PCA and scaling reduce these frames to 64 dimensions. The key purpose of PCA is to reduce the number of parameters which has led to greater generalisation. We have dropped our parameters to 30000 from 100,000+ earlier and our model performs better on held out recordings.
+`raw_clips. Since it has a large analysis window of 3 seconds an LSTM is not required. But since birds normally vocalise at a much higher frequency than elephants we have to raise the frequency of the raw audio, allowing Birdnet to process the audio at a frequency range closer to its learned acoustic representation. We do this via temporal compression where all frequency is shifted upward by a 16x speedup.
 
 ### Training and evaluation
 
